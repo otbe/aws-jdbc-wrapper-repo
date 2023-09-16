@@ -23,32 +23,32 @@ import java.util.List;
 @SpringBootTest
 @Import(DbConfig.class)
 class DemoApplicationTests {
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+  @Autowired JdbcTemplate jdbcTemplate;
 
-    @Value("${spring.datasource.url}") String url;
+  @Value("${spring.datasource.url}")
+  String url;
 
-    @Test
-    @SneakyThrows
-    void failingTest() {
-        // works
-        jdbcTemplate.execute("select 42;");
+  @Test
+  @SneakyThrows
+  void failingTest() {
+    // works
+    jdbcTemplate.execute("select 42;");
 
-        final var pgConnection = DriverManager.getConnection(url).unwrap(PgConnection.class);
-        // works
-        pgConnection.createStatement().executeQuery("select 42;");
+    try (var pgConnection = DriverManager.getConnection(url).unwrap(PgConnection.class)) {
+      // works
+      pgConnection.createStatement().executeQuery("select 42;");
 
-        // a little bit of memory pressure to trigger GC
-        List<byte[]> list = new LinkedList<>();
-        int index = 1;
-        while (index < 20) {
-            byte[] b = new byte[10 * 1024 * 1024]; // 10MB byte object
-            list.add(b);
-            index++;
-        }
+      // a little bit of memory pressure to trigger GC
+      List<byte[]> list = new LinkedList<>();
+      int index = 1;
+      while (index < 20) {
+        byte[] b = new byte[10 * 1024 * 1024]; // 10MB byte object
+        list.add(b);
+        index++;
+      }
 
-        // breaks
-        pgConnection.createStatement().executeQuery("select 42;");
+      // breaks
+      pgConnection.createStatement().executeQuery("select 42;");
     }
-
+  }
 }
