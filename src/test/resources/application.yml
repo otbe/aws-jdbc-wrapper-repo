@@ -1,0 +1,8 @@
+logging:
+  level:
+    software:
+      amazon: DEBUG
+
+spring:
+  datasource:
+    driver-class-name: software.amazon.jdbc.Driver
