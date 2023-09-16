@@ -3,14 +3,13 @@ package com.example.demo;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @TestConfiguration
 public class DbConfig {
   @Bean
-  public JdbcDatabaseContainer<?> monogDbContainer(DynamicPropertyRegistry properties) {
-    JdbcDatabaseContainer<?> container = new PostgreSQLContainer("postgres:15.3");
+  public PostgreSQLContainer<?> postgreSQLContainer(DynamicPropertyRegistry properties) {
+    PostgreSQLContainer<?> container = new PostgreSQLContainer("postgres:15.3");
     properties.add(
         "spring.datasource.url",
         () ->
